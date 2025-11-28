@@ -3,6 +3,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Sidebar } from "../components/sidebar";
+import { Toaster } from "../components/ui/sonner";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const RootLayout = () => (
         </Panel>
       </PanelGroup>
     </div>
+    <Toaster position="bottom-right" />
   </QueryClientProvider>
 );
 

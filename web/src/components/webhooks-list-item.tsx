@@ -6,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { formatMethodColor } from "../constants/format-method-color";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface WebhooksListItemProps {
   id: string;
@@ -30,6 +31,12 @@ export function WebhooksListItem({
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["webhooks"] });
+      toast.success("Webhook deleted successfully");
+    },
+    onError: (error) => {
+      toast.error("Failed to delete webhook", {
+        description: error.message,
+      });
     },
   });
 

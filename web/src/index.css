@@ -47,5 +47,44 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #52525b; /* zinc-500 */
   }
+
+  /* Sonner toast dark theme */
+  [data-sonner-toaster] {
+    --toast-bg: #18181b; /* zinc-800 */
+    --toast-border: #27272a; /* zinc-700 */
+    --toast-color: #e4e4e7; /* zinc-200 */
+  }
+
+  [data-sonner-toast] {
+    background: var(--toast-bg) !important;
+    color: var(--toast-color) !important;
+    border: 1px solid var(--toast-border) !important;
+  }
+
+  [data-sonner-toast] [data-title] {
+    color: var(--toast-color) !important;
+  }
+
+  [data-sonner-toast] [data-description] {
+    color: #a1a1aa !important; /* zinc-400 */
+  }
+
+  [data-sonner-toast] [data-button] {
+    background: #27272a !important; /* zinc-700 */
+    color: var(--toast-color) !important;
+  }
+
+  [data-sonner-toast] [data-button]:hover {
+    background: #3f3f46 !important; /* zinc-600 */
+  }
+
+  [data-sonner-toast] [data-cancel-button] {
+    background: #27272a !important; /* zinc-700 */
+    color: var(--toast-color) !important;
+  }
+
+  [data-sonner-toast] [data-cancel-button]:hover {
+    background: #3f3f46 !important; /* zinc-600 */
+  }
 }
 
