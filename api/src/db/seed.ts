@@ -303,6 +303,8 @@ async function seed() {
       webhookData.push(webhook);
     }
 
+    await db.delete(webhooks);
+
     // Inserir todos os webhooks de uma vez
     await db.insert(webhooks).values(webhookData);
 
