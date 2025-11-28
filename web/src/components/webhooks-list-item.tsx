@@ -5,6 +5,7 @@ import { Checkbox } from "./ui/checkbox";
 import { formatDistanceToNow } from "date-fns";
 import { twMerge } from "tailwind-merge";
 import { formatMethodColor } from "../constants/format-method-color";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface WebhooksListItemProps {
   id: string;
@@ -19,6 +20,19 @@ export function WebhooksListItem({
   pathname,
   createdAt,
 }: WebhooksListItemProps) {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteWebhook } = useMutation({
+    mutationFn: async (id: string) => {
+      await fetch(`http://localhost:3333/api/webhooks/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["webhooks"] });
+    },
+  });
+
   return (
     <div className="rouded-lg transition-colors duration-150 hover:bg-zinc-700/50 group">
       <div className="flex items-start gap-3 px-4 py-2.5">
@@ -40,6 +54,9 @@ export function WebhooksListItem({
             <p className="truncate text-xs text-zinc-200 leading-tight font-mono hover:underline">
               {pathname}
             </p>
+            <p className="truncate text-[11px] text-emerald-700 leading-tight font-mono mt-1">
+              ID: {id}
+            </p>
             <p className="text-xs text-zinc-500 font-medium mt-1">
               {formatDistanceToNow(createdAt, { addSuffix: true })}
             </p>
@@ -50,8 +67,9 @@ export function WebhooksListItem({
           icon={<Trash2Icon className="size-3.5 text-zinc-400" />}
           className={twMerge(
             "opacity-0 transition-opacity group-hover:opacity-100",
-            "hover:bg-zinc-500 p-1.5 rounded-lg hover:cursor-pointer"
+            "hover:bg-red-700/80 p-1.5 rounded-lg hover:cursor-pointer"
           )}
+          onClick={() => deleteWebhook(id)}
         />
       </div>
     </div>
