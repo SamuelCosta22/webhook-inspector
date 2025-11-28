@@ -13,8 +13,8 @@ const RootLayout = () => (
       <PanelGroup direction="horizontal" className="h-full">
         <Panel
           defaultSize={20}
-          minSize={15}
-          maxSize={40}
+          minSize={22}
+          maxSize={30}
           className="overflow-hidden"
         >
           <Sidebar />

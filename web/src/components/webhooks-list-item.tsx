@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Trash2Icon } from "lucide-react";
+import { CopyIcon, Trash2Icon } from "lucide-react";
 import { IconButton } from "./ui/icon-button";
 import { Checkbox } from "./ui/checkbox";
 import { formatDistanceToNow } from "date-fns";
@@ -40,6 +40,17 @@ export function WebhooksListItem({
     },
   });
 
+  const handleCopyId = async () => {
+    try {
+      await navigator.clipboard.writeText(id);
+      toast.success("ID copied to clipboard");
+    } catch (error) {
+      toast.error("Failed to copy ID", {
+        description: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  };
+
   return (
     <div className="rouded-lg transition-colors duration-150 hover:bg-zinc-700/50 group">
       <div className="flex items-start gap-3 px-4 py-2.5">
@@ -70,14 +81,24 @@ export function WebhooksListItem({
           </div>
         </Link>
 
-        <IconButton
-          icon={<Trash2Icon className="size-3.5 text-zinc-400" />}
-          className={twMerge(
-            "opacity-0 transition-opacity group-hover:opacity-100",
-            "hover:bg-red-700/80 p-1.5 rounded-lg hover:cursor-pointer"
-          )}
-          onClick={() => deleteWebhook(id)}
-        />
+        <div className="flex items-center gap-1">
+          <IconButton
+            icon={<Trash2Icon className="size-3.5 text-zinc-400" />}
+            className={twMerge(
+              "opacity-0 transition-opacity group-hover:opacity-100",
+              "hover:bg-red-700/80 p-1.5 rounded-lg hover:cursor-pointer"
+            )}
+            onClick={() => deleteWebhook(id)}
+          />
+          <IconButton
+            icon={<CopyIcon className="size-3.5 text-zinc-400" />}
+            className={twMerge(
+              "opacity-0 transition-opacity group-hover:opacity-100",
+              "hover:bg-zinc-300/30 p-1.5 rounded-lg hover:cursor-pointer"
+            )}
+            onClick={handleCopyId}
+          />
+        </div>
       </div>
     </div>
   );
