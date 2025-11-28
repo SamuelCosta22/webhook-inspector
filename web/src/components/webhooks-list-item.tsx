@@ -37,7 +37,7 @@ export function WebhooksListItem({
             {method}
           </span>
           <div className="flex-1 min-w-0">
-            <p className="truncate text-xs text-zinc-200 leading-tight font-mono">
+            <p className="truncate text-xs text-zinc-200 leading-tight font-mono hover:underline">
               {pathname}
             </p>
             <p className="text-xs text-zinc-500 font-medium mt-1">

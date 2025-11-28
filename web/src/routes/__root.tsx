@@ -8,18 +8,25 @@ const queryClient = new QueryClient();
 
 const RootLayout = () => (
   <QueryClientProvider client={queryClient}>
-    <PanelGroup direction="horizontal">
-      <Panel defaultSize={20} minSize={15} maxSize={40}>
-        <Sidebar />
-      </Panel>
+    <div className="h-screen overflow-hidden">
+      <PanelGroup direction="horizontal" className="h-full">
+        <Panel
+          defaultSize={20}
+          minSize={15}
+          maxSize={40}
+          className="overflow-hidden"
+        >
+          <Sidebar />
+        </Panel>
 
-      <PanelResizeHandle className="w-px bg-zinc-700 hover:bg-zinc-600 transition-colors duration-150" />
+        <PanelResizeHandle className="w-px bg-zinc-700 hover:bg-zinc-600 transition-colors duration-150" />
 
-      <Panel defaultSize={80} minSize={60}>
-        <Outlet />
-        <TanStackRouterDevtools />
-      </Panel>
-    </PanelGroup>
+        <Panel defaultSize={80} minSize={60} className="overflow-hidden">
+          <Outlet />
+          <TanStackRouterDevtools />
+        </Panel>
+      </PanelGroup>
+    </div>
   </QueryClientProvider>
 );
 

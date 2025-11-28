@@ -1,23 +1,36 @@
+import { format } from "date-fns";
 import { Badge } from "./ui/badge";
 
-export function WebhookDetailHeader() {
+interface WebhookDetailHeaderProps {
+  method: string;
+  pathname: string;
+  ip: string;
+  createdAt: Date;
+}
+
+export function WebhookDetailHeader({
+  method,
+  pathname,
+  ip,
+  createdAt,
+}: WebhookDetailHeaderProps) {
   return (
     <div className="space-y-2 border-b border-zinc-700 p-4">
       <div className="flex items-center gap-3">
-        <Badge>POST</Badge>
-        <span className="text-lg font-medium text-zinc-300">/video/status</span>
+        <Badge>{method}</Badge>
+        <span className="text-lg font-medium text-zinc-300">{pathname}</span>
       </div>
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1 text-sm text-zinc-400">
           <span>From IP</span>
-          <span className="font-mono underline-offset-4 underline">
-            127.0.0.1
-          </span>
+          <span className="font-mono underline-offset-4 underline">{ip}</span>
         </div>
         <span className="w-px h-4 bg-zinc-500" />
         <div className="flex items-center gap-2 text-sm text-zinc-400">
           <span>at</span>
-          <span className="font-mono">April 18th, 18pm</span>
+          <span className="font-mono">
+            {format(createdAt, "MMMM d, yyyy, h:mm a")}
+          </span>
         </div>
       </div>
     </div>
