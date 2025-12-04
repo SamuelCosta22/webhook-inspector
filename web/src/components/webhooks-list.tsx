@@ -1,11 +1,12 @@
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { webhookListSchema } from "../http/schemas/webhooks";
 import { WebhooksListItem } from "./webhooks-list-item";
-import { Loader2Icon, Wand2 } from "lucide-react";
+import { Loader2Icon, Wand2, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CodeBlock } from "./ui/code-block";
+import { IconButton } from "./ui/icon-button";
 
 export function WebhooksList() {
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -15,6 +16,7 @@ export function WebhooksList() {
   const [generatedHandlerCode, setGeneratedHandlerCode] = useState<
     string | null
   >(null);
+  const [isGeneratingHandler, setIsGeneratingHandler] = useState(false);
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery({
@@ -78,6 +80,7 @@ export function WebhooksList() {
   }
 
   async function handleGenerateHandler() {
+    setIsGeneratingHandler(true);
     const response = await fetch("http://localhost:3333/api/generate", {
       method: "POST",
       body: JSON.stringify({ webhookIds: checkedWebhooksIds }),
@@ -91,6 +94,7 @@ export function WebhooksList() {
     const data: GenerateResponse = await response.json();
 
     setGeneratedHandlerCode(data.code);
+    setIsGeneratingHandler(false);
   }
 
   const hasAnyWebhookChecked = checkedWebhooksIds.length > 0;
@@ -101,15 +105,20 @@ export function WebhooksList() {
         <div className="space-y-1 p-2">
           <button
             className={twMerge(
-              "bg-indigo-400 text-white w-full rounded-lg flex items-center justify-center gap-3 font-medium text-sm py-2 mb-2",
+              "sticky top-2 z-10 bg-indigo-400 text-white w-full rounded-lg flex items-center justify-center gap-3 font-medium text-sm py-2 mb-2",
               "disabled:opacity-50 disabled:cursor-not-allowed",
-              "hover:bg-indigo-500 hover:transition-colors hover:duration-150 hover:cursor-pointer"
+              "hover:bg-indigo-500 hover:transition-colors hover:duration-150 hover:cursor-pointer",
+              "shadow-lg"
             )}
-            disabled={!hasAnyWebhookChecked}
+            disabled={!hasAnyWebhookChecked || isGeneratingHandler}
             onClick={() => handleGenerateHandler()}
           >
-            <Wand2 className="size-4" />
-            Gerar Handler
+            {isGeneratingHandler ? (
+              <Loader2Icon className="size-4 animate-spin" />
+            ) : (
+              <Wand2 className="size-4" />
+            )}
+            {isGeneratingHandler ? "Generating handler..." : "Generate handler"}
           </button>
 
           {webhooks.map((webhook) => (
@@ -137,14 +146,34 @@ export function WebhooksList() {
       </div>
 
       {!!generatedHandlerCode && (
-        <Dialog.Root defaultOpen>
-          <Dialog.Overlay className="bg-black/60 inset-0 fixed z-20">
-            <Dialog.Content className="flex items-center justify-center fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 z-40">
-              <div className="bg-zinc-900 w-[800px] p-4 rounded-lg border border-zinc-800 max-h-[800px] overflow-y-auto custom-scrollbar">
+        <Dialog.Root
+          open={!!generatedHandlerCode}
+          onOpenChange={(open) => {
+            if (!open) {
+              setGeneratedHandlerCode(null);
+            }
+          }}
+        >
+          <Dialog.Overlay className="bg-black/60 inset-0 fixed z-20" />
+          <Dialog.Content className="flex items-center justify-center fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] -translate-x-1/2 -translate-y-1/2 z-40">
+            <div className="relative bg-zinc-900 w-[700px] rounded-lg border border-zinc-800 max-h-[800px] flex flex-col">
+              <div className="relative shrink-0 p-4 border-b border-zinc-800 bg-zinc-900 rounded-t-lg">
+                <Dialog.Close asChild>
+                  <IconButton
+                    icon={<XIcon className="size-4 text-zinc-400" />}
+                    className={twMerge(
+                      "absolute top-1 right-1 bottom-1 z-10",
+                      "hover:bg-zinc-700/80 p-1 rounded-lg hover:cursor-pointer",
+                      "bg-zinc-800/90 backdrop-blur-sm border border-zinc-700"
+                    )}
+                  />
+                </Dialog.Close>
+              </div>
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                 <CodeBlock language="typescript" code={generatedHandlerCode} />
               </div>
-            </Dialog.Content>
-          </Dialog.Overlay>
+            </div>
+          </Dialog.Content>
         </Dialog.Root>
       )}
     </>
