@@ -8,6 +8,18 @@ import { formatMethodColor } from "../constants/format-method-color";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
+
 interface WebhooksListItemProps {
   id: string;
   method: string;
@@ -89,14 +101,33 @@ export function WebhooksListItem({
         </Link>
 
         <div className="flex items-center gap-1">
-          <IconButton
-            icon={<Trash2Icon className="size-3.5 text-zinc-400" />}
-            className={twMerge(
-              "opacity-0 transition-opacity group-hover:opacity-100",
-              "hover:bg-red-700/80 p-1.5 rounded-lg hover:cursor-pointer"
-            )}
-            onClick={() => deleteWebhook(id)}
-          />
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <IconButton
+                icon={<Trash2Icon className="size-3.5 text-zinc-400" />}
+                className={twMerge(
+                  "opacity-0 transition-opacity group-hover:opacity-100",
+                  "hover:bg-red-700/80 p-1.5 rounded-lg hover:cursor-pointer"
+                )}
+              />
+            </AlertDialogTrigger>
+            <AlertDialogContent className="bg-zinc-900 border-zinc-600">
+              <AlertDialogHeader>
+                <AlertDialogTitle className="text-zinc-200 text-center">Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription className="text-zinc-400 text-center">
+                  This action cannot be undone. This will permanently delete
+                  this webhook.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel className="bg-zinc-700 hover:bg-zinc-600 text-zinc-200 hover:cursor-pointer border-zinc-600">Cancel</AlertDialogCancel>
+                <AlertDialogAction className="bg-red-700/80 hover:bg-red-600/80 text-zinc-200 hover:cursor-pointer border-red-600" onClick={() => deleteWebhook(id)}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
           <IconButton
             icon={<CopyIcon className="size-3.5 text-zinc-400" />}
             className={twMerge(
