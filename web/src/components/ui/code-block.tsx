@@ -17,7 +17,7 @@ export function CodeBlock({
 
   useEffect(() => {
     if (code) {
-      codeToHtml(code, { lang: language, theme: "vesper" }).then((parsed) =>
+      codeToHtml(code, { lang: language, theme: "poimandres" }).then((parsed) =>
         setParsedCode(parsed)
       );
     }
